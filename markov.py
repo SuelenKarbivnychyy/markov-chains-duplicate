@@ -1,7 +1,7 @@
 """Generate Markov text from text files."""
 
-from random import choice
 import random
+import sys
 
 
 
@@ -11,7 +11,6 @@ def open_and_read_file(file_path):
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
-
     
 
     with open(file_path) as file:
@@ -58,9 +57,8 @@ def make_chains(text_string):
             if key_dict in chains:
                 chains[key_dict].append(value_word)
             else:
-                chains[key_dict] = [value_word]
+                chains[key_dict] = [value_word]    
     
-    # print(chains)  
 
     return chains
 
@@ -71,64 +69,41 @@ def make_text(chains):
 
     words = []
 
-    chain_as_list = list(chains.keys()) 
-    print(chain_as_list)
+    chain_as_list = list(chains.keys())     
     choosen_key = random.choice(chain_as_list)
-
-    random_word_from_key_value = random.choice(chains[choosen_key])
+    
 
     for item in choosen_key:
         words.append(item)
 
-    words.append(random_word_from_key_value)
-
-    first_word_of_new_key = (choosen_key[1])
-    second_word_of_new_key = random_word_from_key_value
-
-    new_key = (first_word_of_new_key , second_word_of_new_key)
-    print(f"key ouside: {new_key}")
+    key = choosen_key
 
 
+    producing_text = True
 
-    producing = True
+    while producing_text:
 
-    while producing:
-        
-        new_key = new_key
-        print(f"new key on the loop:  {new_key}")
-
-        if new_key not in chain_as_list:
-            producing = False           
+        if key not in chain_as_list:
+            producing_text = False           
 
         else:
-            first_word = (new_key[1])
-            print(f"First word for new key: {first_word}")
-            second_word = (random.choice(chains[new_key]))
-            print(f"second word for new key: {second_word}")
+            first_word = (key[1])           
+            second_word = (random.choice(chains[key]))            
 
-            key = (first_word, second_word)
-            print(f"new key is: {key}")
+            key = (first_word, second_word)           
 
-            if key not in chain_as_list:
-                producing = False                
-
-            else:
-                word_from_list_of_words_of_key = random.choice(chains[key])            
-
-                # for word in key:
-                #     words.append(word)
-                words.append(word_from_list_of_words_of_key)  
-
-                new_key = (key[1],  random.choice(chains[key]))
-                print(f"end of iratetion, the next iteration should have the key:  {new_key}")
-
-
+            words.append(second_word)
         
 
     return ' '.join(words)
 
 
-input_path = 'green-eggs.txt'
+# input_path = 'green-eggs.txt'
+try:
+    input_path = sys.argv[1]
+except:
+    input_path = 'green-eggs.txt'
+
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
@@ -140,3 +115,4 @@ chains = make_chains(input_text)
 random_text = make_text(chains)
 
 print(random_text)
+
